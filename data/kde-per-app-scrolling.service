@@ -1,0 +1,13 @@
+[Unit]
+Description=Per-App Touchpad Scrolling Daemon
+PartOf=graphical-session.target
+After=graphical-session.target plasma-kwin_wayland.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/kde-per-app-scrolling-daemon
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

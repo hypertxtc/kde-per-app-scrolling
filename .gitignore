@@ -1,0 +1,9 @@
+kcm/build/
+rpmbuild/
+dist/
+build/
+*.rpm
+*.egg-info/
+__pycache__/
+*.py[cod]
+.venv/

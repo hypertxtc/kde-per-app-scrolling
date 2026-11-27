@@ -1,0 +1,17 @@
+{
+    "KPackageStructure": "KWin/Script",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "kde-per-app-scrolling"
+            }
+        ],
+        "Description": "Reports active window changes to Per-App Touchpad Scrolling daemon",
+        "Icon": "input-touchpad",
+        "Id": "kde-per-app-scrolling",
+        "License": "GPL-3.0-or-later",
+        "Name": "Per-App Touchpad Scrolling",
+        "Version": "0.1.0"
+    },
+    "X-Plasma-API": "javascript"
+}

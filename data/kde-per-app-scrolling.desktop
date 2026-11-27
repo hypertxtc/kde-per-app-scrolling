@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Per-App Touchpad Scrolling
+Comment=Configure touchpad scroll speed per application on KDE Plasma
+Exec=kde-per-app-scrolling
+Icon=input-touchpad
+Terminal=false
+Categories=Settings;HardwareSettings;System;
+Keywords=touchpad;scroll;speed;kwin;kde;
+StartupWMClass=io.github.kdeperappscrolling.Gui
