@@ -85,7 +85,6 @@ KCM.SimpleKCM {
         FormCard.FormCard {
             FormCard.FormSwitchDelegate {
                 text: "Enable Per-App Scrolling"
-                description: "Automatically switch touchpad scroll speed when changing windows"
                 checked: kcm.enabled
                 onToggled: kcm.setEnabled(checked)
             }
@@ -99,23 +98,10 @@ KCM.SimpleKCM {
                 contentItem: RowLayout {
                     spacing: Kirigami.Units.smallSpacing
 
-                    ColumnLayout {
+                    QQC2.Label {
+                        text: "Default Scroll Speed"
                         Layout.fillWidth: true
-                        spacing: 2
-
-                        QQC2.Label {
-                            text: "Default Scroll Speed"
-                            Layout.fillWidth: true
-                            elide: Text.ElideRight
-                        }
-
-                        QQC2.Label {
-                            text: "Fallback speed used when no application rule matches"
-                            font: Kirigami.Theme.smallFont
-                            opacity: 0.7
-                            Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
-                        }
+                        elide: Text.ElideRight
                     }
 
                     QQC2.Slider {
@@ -165,7 +151,6 @@ KCM.SimpleKCM {
 
             FormCard.FormSwitchDelegate {
                 text: "Show System Tray Icon"
-                description: "Display live active app speed in Plasma's system tray"
                 checked: kcm.showTray
                 onToggled: kcm.setShowTray(checked)
             }
@@ -177,8 +162,7 @@ KCM.SimpleKCM {
 
         FormCard.FormCard {
             FormCard.FormPlaceholderMessageDelegate {
-                text: "No application rules yet"
-                explanation: "Click 'Add Application' in the toolbar to configure an app's scroll speed."
+                text: "No application rules"
                 icon.name: "input-touchpad"
                 visible: rulesRepeater.count === 0
             }
@@ -214,8 +198,9 @@ KCM.SimpleKCM {
 
                                 QQC2.Label {
                                     text: modelData.caption_pattern
-                                        ? (modelData.app_id + " • title contains \"" + modelData.caption_pattern + "\"")
-                                        : (modelData.label ? modelData.app_id : "Matched by app ID")
+                                        ? (modelData.app_id + " • \"" + modelData.caption_pattern + "\"")
+                                        : (modelData.label ? modelData.app_id : "")
+                                    visible: text.length > 0
                                     font: Kirigami.Theme.smallFont
                                     opacity: 0.7
                                     Layout.fillWidth: true
@@ -281,8 +266,8 @@ KCM.SimpleKCM {
 
         FormCard.FormCard {
             FormCard.FormTextDelegate {
-                text: "Live Scroll Preview"
-                description: "Test speed: " + kcm.previewFactor.toFixed(2) + "x" + (kcm.previewActive ? " (previewing)" : " (live)")
+                text: kcm.previewFactor.toFixed(2) + "x"
+                description: kcm.previewActive ? "Previewing" : ""
                 trailing: QQC2.Button {
                     text: "Restore Active"
                     icon.name: "edit-undo"
@@ -308,7 +293,7 @@ KCM.SimpleKCM {
 
                         delegate: QQC2.Label {
                             width: ListView.view.width - Kirigami.Units.largeSpacing
-                            text: "Scroll test line " + (index + 1) + " — two-finger scroll here to feel " + kcm.previewFactor.toFixed(2) + "x"
+                            text: "Line " + (index + 1)
                             opacity: 0.85
                             elide: Text.ElideRight
                         }
@@ -403,7 +388,7 @@ KCM.SimpleKCM {
             Kirigami.SearchField {
                 id: searchField
                 Layout.fillWidth: true
-                placeholderText: "Search recent windows or installed applications..."
+                placeholderText: "Search applications..."
                 onTextChanged: kcm.setCandidateFilter(text)
             }
 
