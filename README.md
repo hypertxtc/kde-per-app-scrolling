@@ -2,6 +2,8 @@
 
 Configure touchpad scroll speed (`scrollFactor`) on a per-application (and per-window-title) basis in **KDE Plasma 6 (Wayland)** directly from **System Settings**.
 
+![Per-App Touchpad Scrolling in KDE System Settings](docs/screenshot.png)
+
 ## Architecture
 
 1. **KWin Script (`kwin-script/`)**: Listens for `workspace.windowActivated` and `captionChanged` events in KWin and sends the focused window's `resourceClass`, `resourceName`, `desktopFileName`, and `caption` to the daemon via `callDBus`.
