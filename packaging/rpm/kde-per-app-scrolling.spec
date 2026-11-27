@@ -1,5 +1,5 @@
 Name:           kde-per-app-scrolling
-Version:        0.1.0
+Version:        0.1.1
 Release:        1%{?dist}
 Summary:        Per-application touchpad scroll speed for KDE Plasma 6
 
@@ -79,5 +79,8 @@ sed -e 's|%h/.local/bin/|%{_bindir}/|g' data/kde-per-app-scrolling.service \
 %{_userunitdir}/kde-per-app-scrolling.service
 
 %changelog
+* Fri Nov 27 2026 kde-per-app-scrolling <noreply@example.com> - 0.1.1-1
+- Remove standalone GUI app and ship only the KDE System Settings KCM
+
 * Fri Nov 27 2026 kde-per-app-scrolling <noreply@example.com> - 0.1.0-1
 - Initial Fedora RPM package with KWin script, daemon, tray, and Plasma 6 KCM
