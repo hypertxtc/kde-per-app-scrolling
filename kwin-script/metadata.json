@@ -11,7 +11,7 @@
         "Id": "kde-per-app-scrolling",
         "License": "GPL-3.0-or-later",
         "Name": "Per-App Touchpad Scrolling",
-        "Version": "0.1.1"
+        "Version": "0.1.2"
     },
     "X-Plasma-API": "javascript"
 }

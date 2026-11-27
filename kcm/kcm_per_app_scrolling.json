@@ -9,7 +9,7 @@
         "Icon": "input-touchpad",
         "License": "GPL-3.0-or-later",
         "Name": "Per-App Touchpad Scrolling",
-        "Version": "0.1.1"
+        "Version": "0.1.2"
     },
     "X-KDE-Keywords": "touchpad,scroll,speed,per-app,scrolling,trackpad",
     "X-KDE-System-Settings-Parent-Category": "pointing-devices",
