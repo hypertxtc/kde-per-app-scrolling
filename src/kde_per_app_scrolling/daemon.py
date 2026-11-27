@@ -258,49 +258,22 @@ class DaemonCore:
         }
 
 
-def _is_kcm_installed() -> bool:
-    for base in (
-        Path("/usr/lib64/qt6/plugins/plasma/kcms/systemsettings"),
-        Path("/usr/lib/qt6/plugins/plasma/kcms/systemsettings"),
-    ):
-        if (base / "kcm_per_app_scrolling.so").exists():
-            return True
-    return False
-
-
 def _launch_gui() -> None:
-    """Open the KDE System Settings KCM if installed, otherwise launch the standalone GUI."""
-    systemsettings = shutil.which("systemsettings")
-    if systemsettings and _is_kcm_installed():
-        try:
-            subprocess.Popen(
-                [systemsettings, "kcm_per_app_scrolling"],
-                start_new_session=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-            return
-        except OSError as exc:
-            LOGGER.warning("Failed to launch System Settings KCM: %s", exc)
-
-    candidates = [
-        str(Path(sys.argv[0]).resolve().parent / "kde-per-app-scrolling"),
-        shutil.which("kde-per-app-scrolling") or "",
-        str(Path.home() / ".local/bin/kde-per-app-scrolling"),
-    ]
-    for candidate in candidates:
-        if candidate and Path(candidate).exists():
+    """Open the Per-App Touchpad Scrolling page in KDE System Settings."""
+    for cmd in ("systemsettings", "kcmshell6"):
+        exe = shutil.which(cmd)
+        if exe:
             try:
                 subprocess.Popen(
-                    [candidate],
+                    [exe, "kcm_per_app_scrolling"],
                     start_new_session=True,
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,
                 )
                 return
             except OSError as exc:
-                LOGGER.warning("Failed to launch GUI %s: %s", candidate, exc)
-    LOGGER.warning("Could not locate kde-per-app-scrolling GUI executable")
+                LOGGER.warning("Failed to launch %s kcm_per_app_scrolling: %s", cmd, exc)
+    LOGGER.warning("Could not locate systemsettings or kcmshell6 to open settings")
 
 
 def _build_dbus_service(

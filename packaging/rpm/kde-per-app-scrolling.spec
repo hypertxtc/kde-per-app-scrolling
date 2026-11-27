@@ -24,14 +24,12 @@ Requires:       kwin
 Requires:       python3
 Requires:       python3-dbus
 Requires:       python3-gobject-base
-Recommends:     python3-pyqt6
 
 %description
 Allows setting touchpad scroll speed (scrollFactor) on a per-application
 (and per-window-title) basis in KDE Plasma 6 (Wayland). Includes a KWin
-script, a background D-Bus daemon with a KDE System Tray icon, a native
-KDE System Settings module (under Mouse & Touchpad), and a standalone
-Kirigami fallback GUI.
+script, a background D-Bus daemon with a KDE System Tray icon, and a native
+KDE System Settings module under Mouse & Touchpad.
 
 %prep
 %autosetup -n %{name}-%{version}
@@ -53,13 +51,10 @@ install -d %{buildroot}%{python3_sitelib}
 cp -a src/kde_per_app_scrolling %{buildroot}%{python3_sitelib}/
 find %{buildroot}%{python3_sitelib}/kde_per_app_scrolling -name '__pycache__' -exec rm -rf {} +
 
-install -Dpm 0755 bin/kde-per-app-scrolling %{buildroot}%{_bindir}/kde-per-app-scrolling
 install -Dpm 0755 bin/kde-per-app-scrolling-daemon %{buildroot}%{_bindir}/kde-per-app-scrolling-daemon
 
 install -d %{buildroot}%{_datadir}/kwin/scripts/%{name}
 cp -a kwin-script/. %{buildroot}%{_datadir}/kwin/scripts/%{name}/
-
-install -Dpm 0644 data/kde-per-app-scrolling.desktop %{buildroot}%{_datadir}/applications/kde-per-app-scrolling.desktop
 
 install -d %{buildroot}%{_userunitdir}
 sed -e 's|%h/.local/bin/|%{_bindir}/|g' data/kde-per-app-scrolling.service \
@@ -76,12 +71,10 @@ sed -e 's|%h/.local/bin/|%{_bindir}/|g' data/kde-per-app-scrolling.service \
 
 %files
 %doc README.md
-%{_bindir}/kde-per-app-scrolling
 %{_bindir}/kde-per-app-scrolling-daemon
 %{python3_sitelib}/kde_per_app_scrolling/
 %{_libdir}/qt6/plugins/plasma/kcms/systemsettings/kcm_per_app_scrolling.so
 %{_datadir}/applications/kcm_per_app_scrolling.desktop
-%{_datadir}/applications/kde-per-app-scrolling.desktop
 %{_datadir}/kwin/scripts/%{name}/
 %{_userunitdir}/kde-per-app-scrolling.service
 

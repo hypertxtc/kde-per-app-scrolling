@@ -23,7 +23,7 @@ if command -v qdbus-qt6 >/dev/null 2>&1; then
     qdbus-qt6 org.kde.KWin /KWin reconfigure >/dev/null 2>&1 || true
 fi
 
-# Remove launchers, desktop entry, and library files
+# Remove launchers, any legacy desktop entry, and library files
 rm -f "$BIN_DIR/kde-per-app-scrolling"
 rm -f "$BIN_DIR/kde-per-app-scrolling-daemon"
 rm -f "$APPS_DIR/kde-per-app-scrolling.desktop"
@@ -31,4 +31,5 @@ rm -rf "$LIB_DIR"
 
 echo ""
 echo "Uninstallation complete."
+echo "If you also installed the System Settings KCM plugin, remove it with: ./kcm/uninstall-kcm.sh"
 echo "Note: Your configuration file was kept at: $CONFIG_HOME/kde-per-app-scrolling/config.json"

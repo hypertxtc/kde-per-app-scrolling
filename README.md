@@ -1,60 +1,44 @@
 # KDE Per-App Touchpad Scrolling
 
-Configure touchpad scroll speed (`scrollFactor`) on a per-application basis on **KDE Plasma 6 (Wayland)**.
+Configure touchpad scroll speed (`scrollFactor`) on a per-application (and per-window-title) basis in **KDE Plasma 6 (Wayland)** directly from **System Settings**.
 
 ## Architecture
 
-1. **KWin Script (`kwin-script/`)**: Listens for `workspace.windowActivated` events in KWin and sends the focused window's `resourceClass`, `resourceName`, `desktopFileName`, and `caption` to the daemon via `callDBus`.
-2. **Background Daemon (`kde-per-app-scrolling-daemon`)**: Receives window-focus notifications on `io.github.kdeperappscrolling.Daemon`, matches the active window against your rules in `~/.config/kde-per-app-scrolling/config.json`, and updates `scrollFactor` on all KWin libinput touchpad devices (`/org/kde/KWin/InputDevice/<sysName>`). Also provides an optional native KDE system tray icon (`org.kde.StatusNotifierItem`).
-3. **Standalone KDE GUI (`kde-per-app-scrolling`)**: Native **Qt6 / Kirigami + FormCard** (`PyQt6` + QML) configuration app matching KDE System Settings, allowing you to pick installed or recently focused apps, adjust per-app scroll speed sliders (`0.1x`–`20.0x`), set the default fallback speed, and monitor live status.
+1. **KWin Script (`kwin-script/`)**: Listens for `workspace.windowActivated` and `captionChanged` events in KWin and sends the focused window's `resourceClass`, `resourceName`, `desktopFileName`, and `caption` to the daemon via `callDBus`.
+2. **Background Daemon (`kde-per-app-scrolling-daemon`)**: Receives window-focus notifications on `io.github.kdeperappscrolling.Daemon`, matches the active window against your rules in `~/.config/kde-per-app-scrolling/config.json`, and updates `scrollFactor` on all KWin libinput touchpad devices (`/org/kde/KWin/InputDevice/<sysName>`). Also provides an optional native KDE system tray icon (`org.kde.StatusNotifierItem` + `com.canonical.dbusmenu`).
+3. **KDE System Settings Module (`kcm/`)**: Native C++ / Qt6 / Kirigami `KQuickConfigModule` (`kcm_per_app_scrolling`) appearing under **System Settings -> Input & Output -> Mouse & Touchpad -> Per-App Touchpad Scrolling**.
 
 ## Requirements
 
-- Pre-installed on Fedora KDE Plasma 6:
-  - `python3`, `python3-dbus`
-  - `kf6-kirigami`, `kf6-kirigami-addons`, `qt6-qtdeclarative`
+- Runtime (pre-installed on Fedora KDE Plasma 6):
+  - `python3`, `python3-dbus`, `python3-gobject-base`
+  - `kf6-kirigami`, `kf6-kirigami-addons`, `kwin`
   - `kpackagetool6`, `kwriteconfig6`, `qdbus-qt6`
-- Required for the PyQt6 + Kirigami GUI:
-  - `python3-pyqt6` (`sudo dnf install python3-pyqt6`)
+- Build dependencies for the KDE System Settings KCM plugin (Fedora):
+  ```bash
+  sudo dnf install cmake gcc-c++ extra-cmake-modules qt6-qtbase-devel qt6-qtdeclarative-devel kf6-kcmutils-devel kf6-kcoreaddons-devel kf6-ki18n-devel
+  ```
 
 ## Installation
 
-```bash
-./install.sh
-```
-
-This installs:
-- Package files (including `qml/Main.qml`) into `~/.local/share/kde-per-app-scrolling/lib/`
-- Launchers into `~/.local/bin/kde-per-app-scrolling` and `~/.local/bin/kde-per-app-scrolling-daemon`
-- Desktop entry into `~/.local/share/applications/kde-per-app-scrolling.desktop`
-- KWin script `kde-per-app-scrolling` (enabled in `kwinrc`)
-- User systemd service `kde-per-app-scrolling.service` (enabled and started)
-
-## Usage
-
-- Open **Per-App Touchpad Scrolling** from your KDE application menu (or run `~/.local/bin/kde-per-app-scrolling`, or click the touchpad tray icon).
-- Click **Add Application** in the toolbar to select an installed or recently focused application (or enter a custom `resourceClass` / `.desktop` name).
-- Adjust the speed slider/spinbox for each app (`1.00x` is Plasma's default; `< 1.0` slows scrolling, `> 1.0` speeds it up).
-- Left-click the tray icon to open settings, or middle-click (`SecondaryActivate`) to toggle per-app rules on/off.
-
-## KDE System Settings Integration (KCM)
-
-To integrate directly inside **System Settings -> Input & Output -> Mouse & Touchpad** (right next to *Touchpad*) instead of using a standalone window:
-
-1. Install the Qt6 / KF6 C++ build dependencies (Fedora):
-   ```bash
-   sudo dnf install cmake gcc-c++ extra-cmake-modules qt6-qtbase-devel qt6-qtdeclarative-devel kf6-kcmutils-devel kf6-kcoreaddons-devel kf6-ki18n-devel
-   ```
-2. Build and install the System Settings module:
+1. Build and install the KDE System Settings KCM plugin:
    ```bash
    ./kcm/install-kcm.sh
    ```
-3. Launch directly anytime with `systemsettings kcm_per_app_scrolling` (the system tray icon will also automatically open System Settings once installed).
+2. Install and start the daemon and KWin script:
+   ```bash
+   ./install.sh
+   ```
 
-To remove the System Settings module later:
-```bash
-./kcm/uninstall-kcm.sh
-```
+## Usage
+
+- Open **System Settings -> Input & Output -> Mouse & Touchpad -> Per-App Touchpad Scrolling**, or run:
+  ```bash
+  systemsettings kcm_per_app_scrolling
+  ```
+- Click **Add Application** in the toolbar to pick an installed or recently focused application (or enter a custom `resourceClass` / `.desktop` name and optional **Title Contains** filter for web apps or browser tabs).
+- Adjust the speed slider/spinbox for each app (`1.00x` is Plasma's default; `< 1.0` slows scrolling, `> 1.0` speeds it up) and feel the speed live in the **Scroll Test Pad**.
+- Left-click the tray icon to open System Settings, middle-click (`SecondaryActivate`) to pause/resume, or right-click for quick actions.
 
 ## RPM Packaging & GitHub Actions
 
@@ -94,6 +78,7 @@ The GitHub Actions workflow in [.github/workflows/build-rpm.yml](.github/workflo
 
 ```bash
 ./uninstall.sh
+./kcm/uninstall-kcm.sh
 ```
 
 Your saved rules in `~/.config/kde-per-app-scrolling/config.json` are preserved.
